@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_sscanf.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avially <avially@student.42.fr>            +#+  +:+       +#+        */
+/*   By: vdaviot <vdaviot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/08/31 21:56:16 by vdaviot           #+#    #+#             */
-/*   Updated: 2017/03/23 19:13:34 by avially          ###   ########.fr       */
+/*   Updated: 2017/03/24 17:06:04 by avially          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,34 @@ static	int		convert_str(char **format, char **str, char *ptr, int buffsize)
 
 static int	convert_color(char **format, char **str, float *r, float *g, float *b)
 {
-	return (0);
+	char	*dest;
+
+	dest = (char *)malloc(sizeof(char) *3);
+	if (**str == '#')
+	{
+		(void)(*str)++;
+		*r = (float)ft_deconvert(ft_strncpy(dest, *str, 2), 16);
+		(void)(*str)++;
+		(void)(*str)++;
+		*g = (float)ft_deconvert(ft_strncpy(dest, *str, 2), 16);
+		(void)(*str)++;
+		(void)(*str)++;
+		*b = (float)ft_deconvert(ft_strncpy(dest, *str, 2), 16);
+	}
+	else if ((ft_isdigit(**str) || **str == '-'))
+	{
+	*r = (float)ft_atof(*str);
+	while (ft_isdigit(**str) || **str == '.' || **str == 'f' || **str == '-' || **str == '+')
+		(void)(*str)++;
+	while (ft_isspace(**str))
+		(void)(*str)++;
+	*g = (float)ft_atof(*str);
+	while (ft_isdigit(**str) || **str == '.' || **str == 'f' || **str == '-' || **str == '+')
+		(void)(*str)++;
+	*b = (float)ft_atof(*str);
+	}
+	(*format) += 2;
+	return (1);
 }
 
 int			sscanf_return(int value, va_list *vargs)

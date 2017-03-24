@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_rt_file.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avially <avially@student.42.fr>            +#+  +:+       +#+        */
+/*   By: vdaviot <vdaviot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/09/20 22:01:00 by vdaviot           #+#    #+#             */
-/*   Updated: 2017/03/23 19:12:35 by avially          ###   ########.fr       */
+/*   Updated: 2017/03/24 17:22:57 by avially          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 #include "keywords.h"
 
 #define NEW_OBJECT(var, name) var = (t_object *)malloc(sizeof(t_object)); if (!var) ft_exit("malloc error"); ft_strcpy(var, name);
-//#define	NEW_OBJECT() (t_object *)malloc(sizeof(t_object))
 #define SS(t) while(*t&&ft_isspace(*t))t++;
 #define SKIP_EMPTY_LINE(l) {char*t=l;SS(t);if (*t==0)continue;}
 
@@ -56,21 +55,51 @@ bool			check_obj_line(char *line, char *obj_name, int *indent_level)
 		return false;
 }
 
-void			fill_prop_vec3(t_vec3 *vec, char *line, const char *prop)
+void 			fill_prop_camera(t_camera *camera, chqr *line, const char *prop)
 {
-	ft_sscanf(LF_RT_POS, line, &vec->x, &vec->y, &vec->z);
-	ft_sscanf(LF_RT_ROT, line, &vec->x, &vec->y, &vec->z);
-	ft_sscanf(LF_RT_SCALE, line, &vec->x, &vec->y, &vec->z);
+
 }
 
-void			fill_prop_int(int *type, char *line, const char *prop)
+void			fill_prop_light(t_light *light, char *line, const char *prop)
 {
-	*type = 42;
+	ft_sscanf(LF_RT_COLOR, line, &light->color.x, &light->color.y, &light->color.z);
+
+	ft_sscanf(LF_RT_INTENSITY, line, &light->intensity);
+	ft_sscanf(LF_RT_ANGLE, line, &light->angle);
+
+	ft_sscanf(LF_RT_TYPE, line, &light->type);
+}
+
+void			fill_prop_transform(t_transform *tsf, char *line, const char *prop)
+{
+	ft_sscanf(LF_RT_POS, line, &tsf->position.x, &tsf->position.y, &tsf->position.z);
+	ft_sscanf(LF_RT_ROT, line, &tsf->rotation.x, &tsf->rotation.y, &tsf->rotation.z);
+}
+
+void  		fill_prop_material(t_material *mtl, char *line, const char *prop)
+{
+	ft_sscanf(LF_RT_COLOR, line, &mtl->color.x, &mtl->color.y, &mtl->color.z);
+	ft_sscanf(LF_RT_EMISSION_COLOR, line, &mtl->emission_color.x, &mtl->emission_color.y, &mtl->emission_color.z);
+	ft_sscanf(LF_RT_HIGHLIGHT_COLOR, line, &mtl->highlight_color.x, &mtl->highlight_color.y, &mtl->highlight_color.z);
+
+	ft_sscanf(LF_RT_TRANSPARENCY, line, &mtl->transparency);
+	ft_sscanf(LF_RT_SPECULAR, line, &mtl->specular);
+	ft_sscanf(LF_RT_REFLECTION, line, &mtl->reflection);
+	ft_sscanf(LF_RT_REFRACTION, line, &mtl->refraction);
+
+	ft_sscanf(LF_RT_BUMPMAP, line, &mtl->transparency_map.file);
+	ft_sscanf(LF_RT_TEXTURE, line, &mtl->transparency_map.file);
+	ft_sscanf(LF_RT_EMISSION_MAP, line, &mtl->transparency_map.file);
+	ft_sscanf(LF_RT_HIGHLIGHT_MAP, line, &mtl->transparency_map.file);
+	ft_sscanf(LF_RT_TRANSPARENCY_MAP, line, &mtl->transparency_map.file);
+	ft_sscanf(LF_RT_SPECULAR_MAP, line, &mtl->specular_map.file);
+	ft_sscanf(LF_RT_REFLECTION_MAP, line, &mtl->reflection_map.file);
+	ft_sscanf(LF_RT_REFRACTION_MAP, line, &mtl->refraction_map.file);
 }
 
 //T: protection for size of bumpmaps: same size than textures.
 
-#define FILL_PROP(X, line, pname) _Generic((X), t_vec3 *: fill_prop_vec3, int *: fill_prop_int)(X, line, pname)
+#define FILL_PROP(X, line, pname) _Generic((X), t_light *: fill_prop_light, t_transform *: fill_prop_transform, t_material *:fill_prop_material, t_camera *:fill_prop_camera) (X, line, pname)
 #define A(c, line, p1) FILL_PROP(&c-> p1, line, #p1);// FILL_PROP(&c-> p2, line, #p2);
 void			parse_rt_file(char *file, t_scene *scene)
 {
@@ -96,11 +125,16 @@ void			parse_rt_file(char *file, t_scene *scene)
 			ft_exit("max indentation reached at line: %i\n", line_count);
 		if (indent_level == current_object->indent_level + 1)
 		{
-			A(current_object, line, transform.rotation);
-			A(current_object, line, transform.position);
-			printf("line: %s\n", line);
-			printf("pos.x: %f, pos.y: %f, pos.z: %f\n", current_object->transform.position.x,current_object->transform.position.y,current_object->transform.position.z);
-			printf("rot.x: %f, rot.y: %f, rot.z: %f\n", current_object->transform.rotation.x,current_object->transform.rotation.y,current_object->transform.rotation.z);
+			A(current_object, line, transform);
+			A(current_object, line, material);
+			//printf("name: %s\n", current_object->name);
+			//printf("line: %s\n", line);
+			//printf("transparency: %f\n", current_object->material.transparency);
+			//printf("specular: %f\n", current_object->material.specular);
+			//printf("reflection: %f\n", current_object->material.reflection);
+			//printf("refraction: %f\n", current_object->material.refraction);
+			//printf("pos.x: %f, pos.y: %f, pos.z: %f\n", current_object->transform.position.x,current_object->transform.position.y,current_object->transform.position.z);
+			//printf("rot.x: %f, rot.y: %f, rot.z: %f\n", current_object->transform.rotation.x,current_object->transform.rotation.y,current_object->transform.rotation.z);
 		}
 		else
 			ft_exit("bad indentation at line %i\n", line_count);

@@ -13,7 +13,7 @@ little sphere:
 	texture: yolol.png
 	emission color: 0 1 1
 	highlight color: 1 1 0
-	transparency: .5
+	transparency: 0.5
 	reflection: OFF
 	refraction: .5
 	bumpmap: olol.tga
@@ -23,8 +23,8 @@ little sphere:
 plane:
 	type: plane
 	refraction map: refrac.png
-	emission color map: olol.tga
-	highlight color map: color.tga
+	emission map: olol.tga
+	highlight map: color.tga
 	transparency map: map.png
 	specular map: sepc.png
 	pos: 880 540 200
@@ -33,6 +33,7 @@ plane:
 
 light 1:
 	type: point_light
+	intensity: 3
 	pos: 100 100 100
 
 sun:
