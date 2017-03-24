@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_rt_file.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vdaviot <vdaviot@student.42.fr>            +#+  +:+       +#+        */
+/*   By: avially <avially@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/09/20 22:01:00 by vdaviot           #+#    #+#             */
-/*   Updated: 2017/03/24 17:22:57 by avially          ###   ########.fr       */
+/*   Updated: 2017/03/24 23:44:40 by avially          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,19 +55,53 @@ bool			check_obj_line(char *line, char *obj_name, int *indent_level)
 		return false;
 }
 
-void 			fill_prop_camera(t_camera *camera, chqr *line, const char *prop)
+int				get_next_word(char *str, char *word)
 {
 
 }
 
+void 			fill_prop_camera(t_camera *cam, char *line, const char *prop)
+{
+	char	*str;
+	int		ret;
+	char	word[256];
+
+	ret = 0;
+	ft_sscanf(LF_RT_FOV, line, &cam->fov);
+
+	ft_sscanf(LF_RT_MASK, line, &str);
+	/*while ((get_next_word(str, &word)))
+	{
+		if (FOR(int i = 0, mask_restricted_keywords[i] != END, i++))
+		{
+			if (!ft_strcmp(mask_restricted_keywords[i].name, word))
+				ret |= mask_restricted_keywords[i].value;
+		}
+	}
+	cam.post_processing_mask = ret;*/
+}
+
+void  		fill_prop_primitive(t_primitive *prim, char *line, const char *prop)
+{
+	ft_sscanf(LF_RT_RADIUS, line, &prim->radius);
+	ft_sscanf(LF_RT_HEIGHT, line, &prim->height);
+	ft_sscanf(LF_RT_ANGLE, line, &prim->angle);
+
+	if (!ft_sscanf(LF_RT_SLICE, line, &prim->slice))
+		prim->nb_slice++;
+}
+
 void			fill_prop_light(t_light *light, char *line, const char *prop)
 {
+	char	*name;
+
 	ft_sscanf(LF_RT_COLOR, line, &light->color.x, &light->color.y, &light->color.z);
 
 	ft_sscanf(LF_RT_INTENSITY, line, &light->intensity);
 	ft_sscanf(LF_RT_ANGLE, line, &light->angle);
 
-	ft_sscanf(LF_RT_TYPE, line, &light->type);
+	ft_sscanf(LF_RT_TYPE, line, &name);
+
 }
 
 void			fill_prop_transform(t_transform *tsf, char *line, const char *prop)
@@ -78,6 +112,11 @@ void			fill_prop_transform(t_transform *tsf, char *line, const char *prop)
 
 void  		fill_prop_material(t_material *mtl, char *line, const char *prop)
 {
+	char	*str;
+	char	word[256];
+	int		ret;
+
+	ret = 0;
 	ft_sscanf(LF_RT_COLOR, line, &mtl->color.x, &mtl->color.y, &mtl->color.z);
 	ft_sscanf(LF_RT_EMISSION_COLOR, line, &mtl->emission_color.x, &mtl->emission_color.y, &mtl->emission_color.z);
 	ft_sscanf(LF_RT_HIGHLIGHT_COLOR, line, &mtl->highlight_color.x, &mtl->highlight_color.y, &mtl->highlight_color.z);
@@ -95,11 +134,22 @@ void  		fill_prop_material(t_material *mtl, char *line, const char *prop)
 	ft_sscanf(LF_RT_SPECULAR_MAP, line, &mtl->specular_map.file);
 	ft_sscanf(LF_RT_REFLECTION_MAP, line, &mtl->reflection_map.file);
 	ft_sscanf(LF_RT_REFRACTION_MAP, line, &mtl->refraction_map.file);
+
+	ft_sscanf(LF_RT_ILLUM, line, &str);
+	while (get_next_word(str, &word))
+	{
+		if (FOR(int i = 0, illum_restricted_keywords[i] != END, i++) 0))
+		{
+			if (!ft_strcmp(illum_restricted_keywords[i].name, word))
+				ret |= illum_restricted_keywords[i].value;
+		}
+	}
+	cam.post_processing_mask = ret;
 }
 
 //T: protection for size of bumpmaps: same size than textures.
 
-#define FILL_PROP(X, line, pname) _Generic((X), t_light *: fill_prop_light, t_transform *: fill_prop_transform, t_material *:fill_prop_material, t_camera *:fill_prop_camera) (X, line, pname)
+#define FILL_PROP(X, line, pname) _Generic((X), t_light *: fill_prop_light, t_transform *: fill_prop_transform, t_material *:fill_prop_material, t_camera *:fill_prop_camera, t_primitive *:fill_prop_primitive) (X, line, pname)
 #define A(c, line, p1) FILL_PROP(&c-> p1, line, #p1);// FILL_PROP(&c-> p2, line, #p2);
 void			parse_rt_file(char *file, t_scene *scene)
 {
@@ -127,6 +177,9 @@ void			parse_rt_file(char *file, t_scene *scene)
 		{
 			A(current_object, line, transform);
 			A(current_object, line, material);
+			A(current_object, line, primitive);
+			A(current_object, line, light_prop);
+			A(current_object, line, camera);
 			//printf("name: %s\n", current_object->name);
 			//printf("line: %s\n", line);
 			//printf("transparency: %f\n", current_object->material.transparency);

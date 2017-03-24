@@ -18,7 +18,7 @@ little sphere:
 	refraction: .5
 	bumpmap: olol.tga
 	slice: 0 1 0 .3
-	illum: AO | CS | RS
+	illum: AMBIANT CAST_SHADOW
 
 plane:
 	type: plane

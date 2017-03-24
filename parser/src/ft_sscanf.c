@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_sscanf.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vdaviot <vdaviot@student.42.fr>            +#+  +:+       +#+        */
+/*   By: avially <avially@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/08/31 21:56:16 by vdaviot           #+#    #+#             */
-/*   Updated: 2017/03/24 17:06:04 by avially          ###   ########.fr       */
+/*   Updated: 2017/03/24 21:04:53 by avially          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,28 @@ static int	convert_color(char **format, char **str, float *r, float *g, float *b
 	return (1);
 }
 
+static int	convert_vect(char **format, char **str, float *x, float *y, float *z, float *w)
+{
+	*x = (float)ft_atof(*str);
+	while (ft_isdigit(**str) || **str == '.' || **str == 'f' || **str == '-' || **str == '+')
+		(void)(*str)++;
+	while (ft_isspace(**str))
+		(void)(*str)++;
+	*y = (float)ft_atof(*str);
+	while (ft_isdigit(**str) || **str == '.' || **str == 'f' || **str == '-' || **str == '+')
+		(void)(*str)++;
+	while (ft_isspace(**str))
+		(void)(*str)++;
+	*z = (float)ft_atof(*str);
+	while (ft_isdigit(**str) || **str == '.' || **str == 'f' || **str == '-' || **str == '+')
+		(void)(*str)++;
+	while (ft_isspace(**str))
+		(void)(*str)++;
+	*w = (float)ft_atof(*str);
+	(*format) += 2;
+	return (1);
+}
+
 int			sscanf_return(int value, va_list *vargs)
 {
 	va_end(*vargs);
@@ -141,6 +163,9 @@ int			ft_sscanf(char *format, char *str, ...)
 				return sscanf_return (-1, &vargs);
 		if (*format == '%' && format[1] == 'z')
 			if (!convert_color(&format, &str, va_arg(vargs, float *), va_arg(vargs, float *), va_arg(vargs ,float *)))
+				return sscanf_return (-1, &vargs);
+		if (*format == '%' && format[1] == 'v')
+			if (!convert_vect(&format, &str, va_arg(vargs, float *), va_arg(vargs, float *), va_arg(vargs ,float *), va_arg(vargs, float *)))
 				return sscanf_return (-1, &vargs);
 		if (!skip_string(&format, &str))
 			return sscanf_return (-1, &vargs);

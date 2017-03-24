@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   nyancat.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: avially <avially@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/12 23:52:18 by alelievr          #+#    #+#             */
-/*   Updated: 2016/12/21 19:02:55 by alelievr         ###   ########.fr       */
+/*   Updated: 2017/03/24 23:44:37 by avially          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 # define CONCAT(x, y)	x##y
 # define STRINGYFY(x)	#x
 # define ALIAS(x, y)	typeof(x) y = x;
-# define FOR(a, b, c)	0){;} for ((a); (b); (c)
+# define FOR(a, b, c)	0){;} for ((a); (b); (c))
 # define FOREACH(x,y) 0){;}int __##x=0;typeof(*x)y;for(y=*x;(y=x[__##x]);__##x++
 # define SHORTIFY(c)	((long)c | ((long)c << 8))
 # define INTIFY(c)		(SHORTIFY(c) | (SHORTIFY(c) << 16))
@@ -79,9 +79,9 @@ typedef struct	s_untyped_list
 
 # define LIST_CURRENT(l, type) LIST_GET_(l, type, l->current)
 
-# define LIST_AT(l, i) 
+# define LIST_AT(l, i)
 
-#define LIST_CONTENT(elem, type) ((type)((VOID *)elem + sizeof(t_list_links))) 
+#define LIST_CONTENT(elem, type) ((type)((VOID *)elem + sizeof(t_list_links)))
 # define LIST_FOREACH(l, type, as) type __##as; t_untyped_list *__iter##as; \
 	for ((__##as = LIST_CONTENT(l->base, type), __iter##as = l->begin); \
 			__iter##as; (__##as = LIST_CONTENT(__iter##as, type), __iter##as = __iter##as->next))

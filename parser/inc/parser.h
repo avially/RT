@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vdaviot <vdaviot@student.42.fr>            +#+  +:+       +#+        */
+/*   By: avially <avially@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/08/08 14:47:27 by vdaviot           #+#    #+#             */
-/*   Updated: 2017/03/24 17:21:04 by avially          ###   ########.fr       */
+/*   Updated: 2017/03/24 23:25:26 by avially          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,22 +40,30 @@
 # define LF_RT_REFRACTION "\\srefraction:\\s%f\\s"
 # define LF_RT_INTENSITY "\\sintensity:\\s%f\\s"
 # define LF_RT_ANGLE "\\sangle:\\s%f\\s"
+# define LF_RT_RADIUS 	"\\sradius:\\s%f\\s"
+# define LF_RT_HEIGHT 	"\\sheight:\\s%f\\s"
+# define LF_FT_FOV "\\sfov:\\s%f\\s"
 
+# define LF_RT_SLICE "\\sslice:\\s%v\\s"
 
-# define LF_RT_TEXTURE	"\\stexture:\\s%s\\s"
-# define LF_RT_BUMPMAP	"\\sbumpmap:\\s%s\\s"
-# define LF_RT_EMISSION_MAP	"\\semission color map:\\s%s\\s"
-# define LF_RT_HIGHLIGHT_MAP "\\shighlight color map:\\s%s\\s"
-# define LF_RT_REFRACTION_MAP	"\\srefraction map:\\s%s\\s"
-# define LF_RT_TRANSPARENCY_MAP "\\stransparency map:\\s%s\\s"
-# define LF_RT_SPECULAR_MAP "\\sspecular map:\\s%s\\s"
-# define LF_RT_REFLECTION_MAP "\\sreflection map map:\\s%s\\s"
+# define LF_RT_TEXTURE	"\\stexture:\\s%w\\s"
+# define LF_RT_BUMPMAP	"\\sbumpmap:\\s%w\\s"
+# define LF_RT_EMISSION_MAP	"\\semission color map:\\s%w\\s"
+# define LF_RT_HIGHLIGHT_MAP "\\shighlight color map:\\s%w\\s"
+# define LF_RT_REFRACTION_MAP	"\\srefraction map:\\s%w\\s"
+# define LF_RT_TRANSPARENCY_MAP "\\stransparency map:\\s%w\\s"
+# define LF_RT_SPECULAR_MAP "\\sspecular map:\\s%w\\s"
+# define LF_RT_REFLECTION_MAP "\\sreflection map map:\\s%w\\s"
+
+# define LF_RT_NAME "\\sname:\\s%s\\s"
+# define LF_RT_MASK "\\spost_processing_mask:\\s%s\\s"
+# define LF_RT_ILLUM "\\sillum:\\s%s\\s"
 # define LF_RT_TYPE "\\stype:\\s%s\\s"
 
+# define LF_RT_FOV  "\\sfov:\\s%f\\s"
 
 # define LF_RT_MTL			"\\smtl:\\sfiles/%w\\s"
 # define LF_RT_AMBIANCE	"\\sambiance:\\s%w\\s%f\\s"
-# define LF_RT_RADIUS 	"\\sradius:\\s%f\\s"
 # define LF_RT_GATE_XOR "\\scsg:\\s%w\\s"
 # define LF_RT_GATE_OR
 # define LF_RT_GATE_AND
@@ -127,6 +135,7 @@ enum		e_primitive_type
 	CAMERA,
 	POINT_LIGHT,
 	SPOT_LIGHT,
+	DIRECTIONAL_LIGHT,
 };
 
 enum					e_post_processing
@@ -154,7 +163,7 @@ enum					e_illumination
 
 typedef	struct  s_primitive
 {
-	int					type;
+	int					*type;
 	union {
 		float			radius;
 		float			height;
@@ -229,7 +238,7 @@ typedef struct			s_camera
 
 typedef struct			s_light
 {
-	char		type[256];
+	int			type;
 	t_vec3	color;
 	float		intensity;
 	float		angle;
