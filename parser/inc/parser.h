@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vdaviot <vdaviot@student.42.fr>            +#+  +:+       +#+        */
+/*   By: avially <avially@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/08/08 14:47:27 by vdaviot           #+#    #+#             */
-/*   Updated: 2017/03/30 13:03:13 by avially          ###   ########.fr       */
+/*   Updated: 2017/03/30 19:05:09 by avially          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,14 +46,14 @@
 
 # define LF_RT_SLICE "\\sslice:\\s%v\\s"
 
-# define LF_RT_TEXTURE	"\\stexture:\\s%w\\s"
-# define LF_RT_BUMPMAP	"\\sbumpmap:\\s%w\\s"
-# define LF_RT_EMISSION_MAP	"\\semission color map:\\s%w\\s"
-# define LF_RT_HIGHLIGHT_MAP "\\shighlight color map:\\s%w\\s"
-# define LF_RT_REFRACTION_MAP	"\\srefraction map:\\s%w\\s"
-# define LF_RT_TRANSPARENCY_MAP "\\stransparency map:\\s%w\\s"
-# define LF_RT_SPECULAR_MAP "\\sspecular map:\\s%w\\s"
-# define LF_RT_REFLECTION_MAP "\\sreflection map map:\\s%w\\s"
+# define LF_RT_TEXTURE	"\\stexture:\\s%s\\s"
+# define LF_RT_BUMPMAP	"\\sbumpmap:\\s%s\\s"
+# define LF_RT_EMISSION_MAP	"\\semission color map:\\s%s\\s"
+# define LF_RT_HIGHLIGHT_MAP "\\shighlight color map:\\s%s\\s"
+# define LF_RT_REFRACTION_MAP	"\\srefraction map:\\s%s\\s"
+# define LF_RT_TRANSPARENCY_MAP "\\stransparency map:\\s%s\\s"
+# define LF_RT_SPECULAR_MAP "\\sspecular map:\\s%s\\s"
+# define LF_RT_REFLECTION_MAP "\\sreflection map map:\\s%s\\s"
 
 # define LF_RT_NAME "\\sname:\\s%s\\s"
 # define LF_RT_MASK "\\spost_processing_mask:\\s%s\\s"
@@ -209,7 +209,7 @@ typedef	struct 			s_material
 typedef struct			s_submesh
 {
 	char			name[128];
-	t_material		material;
+	t_material		*material;
 	t_vec3			*vertex;
 	t_vec3			*normals;
 	t_vec2			*uvs;
@@ -293,6 +293,6 @@ int						ft_sscanf(char *format, char *str, ...);
 int						gl(char *dst, int *fd);
 void					parse_rt_file(char *file, t_scene *prim);
 void					parse_obj_file(char *file, t_mesh *mesh);
-int						get_next_word(char **str, char **res);
+int						get_next_word(char **str, char *res);
 
 #endif

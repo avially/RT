@@ -58,7 +58,6 @@ player:
 		scale: .5 1 .5
 		pos: 0 -1 0
 		mesh: truc.obj
-		mtl: files/mtl_file.mtl
 
 	leg2:
 		type: cube

@@ -6,7 +6,7 @@
 #    By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/07/15 15:13:38 by alelievr          #+#    #+#              #
-#    Updated: 2017/03/30 12:13:37 by avially          ###   ########.fr        #
+#    Updated: 2017/03/30 15:31:57 by avially          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -52,8 +52,8 @@ WERROR		=	#-Werror
 CFLAGS		=	-Wall -Wextra -ferror-limit=999
 CPROTECTION	=	-z execstack -fno-stack-protector
 
-DEBUGFLAGS1	=	-ggdb -fsanitize=address -fno-omit-frame-pointer -fno-optimize-sibling-calls -O0
-DEBUGFLAGS2	=	-fsanitize-memory-track-origins=2
+DEBUGFLAGS1	=	-ggdb -O1
+DEBUGFLAGS2	=	-fsanitize-memory-track-origins=2  -fsanitize=address -fno-omit-frame-pointer -fno-optimize-sibling-calls
 OPTFLAGS1	=	-funroll-loops -O2
 OPTFLAGS2	=	-pipe -funroll-loops -Ofast
 

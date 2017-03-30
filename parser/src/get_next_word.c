@@ -1,34 +1,17 @@
 #include "parser.h"
 
-char   *ft_straj(char *str, char c)
+int   get_next_word(char **str, char *res)
 {
-  char  *res;
-  int   i;
+  char *b = *str;
 
-  i = 0;
-  if (!(res = (char *)malloc(sizeof(char) * ft_strlen(str) + 2)))
-    return (NULL);
-  if (str)
-    while(str[i]){
-      res[i] = str[i];
-      i++;
-    }
-  res[i] = c;
-  res[i + 1] = '\0';
-  return res;
-}
-
-int   get_next_word(char **str, char **res)
-{
-  if (!*str)
+  if (!**str)
     return (0);
-  while(ft_isspace(**str))
+  while(ft_isspace(**str) && **str)
     (*str)++;
-  if (**str == '\0')
+  if (!**str)
     return (0);
-  while(!ft_isspace(**str) && **str != '\0'){
-    *res = ft_straj(*res, **str);
-    (*str)++;
-  }
-  return (1);
+  while(!ft_isspace(**str) && **str)
+    *res++ = *(*str)++;
+  *res = 0;
+  return (*str - b);
 }

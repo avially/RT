@@ -6,7 +6,7 @@
 /*   By: avially <avially@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/08/31 21:56:16 by vdaviot           #+#    #+#             */
-/*   Updated: 2017/03/24 21:04:53 by avially          ###   ########.fr       */
+/*   Updated: 2017/03/30 19:06:57 by avially          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ static	int		convert_word(char **format, char **str, char *ptr, int buffsize)
 
 static	int		convert_str(char **format, char **str, char *ptr, int buffsize)
 {
-	const char	*begin_str = ptr;
+	const char	*begin_str = *str;
 	int					i;
 
 	i = 0;
