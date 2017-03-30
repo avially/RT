@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avially <avially@student.42.fr>            +#+  +:+       +#+        */
+/*   By: vdaviot <vdaviot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/08/08 14:47:27 by vdaviot           #+#    #+#             */
-/*   Updated: 2017/03/24 23:25:26 by avially          ###   ########.fr       */
+/*   Updated: 2017/03/30 13:03:13 by avially          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -293,5 +293,6 @@ int						ft_sscanf(char *format, char *str, ...);
 int						gl(char *dst, int *fd);
 void					parse_rt_file(char *file, t_scene *prim);
 void					parse_obj_file(char *file, t_mesh *mesh);
+int						get_next_word(char **str, char **res);
 
 #endif

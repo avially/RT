@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: alelievr <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: alelievr <alelievr@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/07/15 15:13:38 by alelievr          #+#    #+#              #
-#    Updated: 2017/03/22 16:35:39 by avially          ###   ########.fr        #
+#    Updated: 2017/03/30 12:13:37 by avially          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,6 +22,7 @@ SRC			=	main.c				\
 				utils.c				\
 				ft_sscanf.c			\
 				parse_obj_file.c	\
+				get_next_word.c  \
 
 #	Objects
 OBJDIR		=	obj

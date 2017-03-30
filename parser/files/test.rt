@@ -19,6 +19,7 @@ little sphere:
 	bumpmap: olol.tga
 	slice: 0 1 0 .3
 	illum: AMBIANT CAST_SHADOW
+	post_processing_mask: SEPIA CARTOON
 
 plane:
 	type: plane

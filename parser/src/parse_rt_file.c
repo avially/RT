@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_rt_file.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avially <avially@student.42.fr>            +#+  +:+       +#+        */
+/*   By: vdaviot <vdaviot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/09/20 22:01:00 by vdaviot           #+#    #+#             */
-/*   Updated: 2017/03/24 23:44:40 by avially          ###   ########.fr       */
+/*   Updated: 2017/03/30 13:24:39 by avially          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,30 +55,34 @@ bool			check_obj_line(char *line, char *obj_name, int *indent_level)
 		return false;
 }
 
-int				get_next_word(char *str, char *word)
-{
-
-}
-
 void 			fill_prop_camera(t_camera *cam, char *line, const char *prop)
 {
-	char	*str;
 	int		ret;
-	char	word[256];
+	char	*str;
+	char	*word;
+	int		i;
 
+	str = (char *)malloc(sizeof(char) * 256);
 	ret = 0;
+	i = 0;
 	ft_sscanf(LF_RT_FOV, line, &cam->fov);
 
-	ft_sscanf(LF_RT_MASK, line, &str);
-	/*while ((get_next_word(str, &word)))
+	ft_sscanf(LF_RT_MASK, "post_processing_mask: SEPIA CARTOON", &str, 256);
+	printf("str: %s\n", str);
+	while ((get_next_word(&str, &word)))
 	{
-		if (FOR(int i = 0, mask_restricted_keywords[i] != END, i++))
+		printf("word: %s\n", word);
+		while (ft_strcmp(mask_restricted_keywords[i].name, "END"))
 		{
-			if (!ft_strcmp(mask_restricted_keywords[i].name, word))
+			if (!ft_strcmp(mask_restricted_keywords[i].name, word)){
+				printf("ok\n");
 				ret |= mask_restricted_keywords[i].value;
+			}
+			i++;
 		}
+		word = NULL;
 	}
-	cam.post_processing_mask = ret;*/
+	cam->post_processing_mask = ret;
 }
 
 void  		fill_prop_primitive(t_primitive *prim, char *line, const char *prop)
@@ -87,8 +91,8 @@ void  		fill_prop_primitive(t_primitive *prim, char *line, const char *prop)
 	ft_sscanf(LF_RT_HEIGHT, line, &prim->height);
 	ft_sscanf(LF_RT_ANGLE, line, &prim->angle);
 
-	if (!ft_sscanf(LF_RT_SLICE, line, &prim->slice))
-		prim->nb_slice++;
+	//if (!ft_sscanf(LF_RT_SLICE, line, &prim->slice))
+		//prim->nb_slice++;
 }
 
 void			fill_prop_light(t_light *light, char *line, const char *prop)
@@ -113,7 +117,7 @@ void			fill_prop_transform(t_transform *tsf, char *line, const char *prop)
 void  		fill_prop_material(t_material *mtl, char *line, const char *prop)
 {
 	char	*str;
-	char	word[256];
+	char	*word;
 	int		ret;
 
 	ret = 0;
@@ -136,15 +140,16 @@ void  		fill_prop_material(t_material *mtl, char *line, const char *prop)
 	ft_sscanf(LF_RT_REFRACTION_MAP, line, &mtl->refraction_map.file);
 
 	ft_sscanf(LF_RT_ILLUM, line, &str);
-	while (get_next_word(str, &word))
+	/*while (get_next_word(&str, &word))
 	{
-		if (FOR(int i = 0, illum_restricted_keywords[i] != END, i++) 0))
+		if (FOR(int i = 0, illum_restricted_keywords[i] != END, i++))
 		{
 			if (!ft_strcmp(illum_restricted_keywords[i].name, word))
 				ret |= illum_restricted_keywords[i].value;
 		}
+		word = NULL;
 	}
-	cam.post_processing_mask = ret;
+	cam.post_processing_mask = ret;*/
 }
 
 //T: protection for size of bumpmaps: same size than textures.
@@ -180,6 +185,7 @@ void			parse_rt_file(char *file, t_scene *scene)
 			A(current_object, line, primitive);
 			A(current_object, line, light_prop);
 			A(current_object, line, camera);
+
 			//printf("name: %s\n", current_object->name);
 			//printf("line: %s\n", line);
 			//printf("transparency: %f\n", current_object->material.transparency);
@@ -188,6 +194,7 @@ void			parse_rt_file(char *file, t_scene *scene)
 			//printf("refraction: %f\n", current_object->material.refraction);
 			//printf("pos.x: %f, pos.y: %f, pos.z: %f\n", current_object->transform.position.x,current_object->transform.position.y,current_object->transform.position.z);
 			//printf("rot.x: %f, rot.y: %f, rot.z: %f\n", current_object->transform.rotation.x,current_object->transform.rotation.y,current_object->transform.rotation.z);
+			//printf("mask: %d\n", current_object->camera.post_processing_mask);
 		}
 		else
 			ft_exit("bad indentation at line %i\n", line_count);
