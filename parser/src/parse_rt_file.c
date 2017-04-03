@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_rt_file.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avially <avially@student.42.fr>            +#+  +:+       +#+        */
+/*   By: vdaviot <vdaviot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/09/20 22:01:00 by vdaviot           #+#    #+#             */
-/*   Updated: 2017/03/30 19:06:16 by avially          ###   ########.fr       */
+/*   Updated: 2017/04/03 15:22:58 by avially          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,15 +87,15 @@ void  		fill_prop_primitive(t_primitive *prim, char *line, const char *prop)
 	ft_sscanf(LF_RT_HEIGHT, line, &prim->height);
 	ft_sscanf(LF_RT_ANGLE, line, &prim->angle);
 
-	if (!ft_sscanf(LF_RT_SLICE, line, &prim->slice))
-		prim->nb_slice++;
+	//if (!ft_sscanf(LF_RT_SLICE, line, &prim->slice))
+	//	prim->nb_slice++;
 }
 
 void			fill_prop_light(t_light *light, char *line, const char *prop)
 {
 	char	name[256];
 
-	ft_sscanf(LF_RT_COLOR, line, &light->color.x, &light->color.y, &light->color.z);
+	ft_sscanf(LF_RT_LIGHT_COLOR, line, &light->color.x, &light->color.y, &light->color.z);
 
 	ft_sscanf(LF_RT_INTENSITY, line, &light->intensity);
 	ft_sscanf(LF_RT_ANGLE, line, &light->angle);
@@ -167,16 +167,72 @@ void  		fill_prop_material(t_material *mtl, char *line, const char *prop)
 
 //T: protection for size of bumpmaps: same size than textures.
 
+void   		affichage_test(t_scene *scene)
+{
+	t_object 	*lst_obj;
+
+	lst_obj = scene->root_view;
+
+	while(scene->nb_object > 0){
+		printf("name: %s\n", lst_obj->name);
+		if (lst_obj->material.transparency)
+		printf("transparency: %f\n", lst_obj->material.transparency);
+		if (lst_obj->material.reflection)
+		printf("reflection: %f\n", lst_obj->material.reflection);
+		if (lst_obj->material.refraction)
+		printf("refraction: %f\n", lst_obj->material.refraction);
+		if (lst_obj->material.specular)
+		printf("specular: %f\n", lst_obj->material.specular);
+		if (lst_obj->light_prop.intensity)
+		printf("light intensity: %f\n", lst_obj->light_prop.intensity);
+		if (lst_obj->light_prop.angle)
+		printf("light angle: %f\n", lst_obj->light_prop.angle);
+		if (lst_obj->camera.fov)
+		printf("FOV: %f\n", lst_obj->camera.fov);
+		if (lst_obj->primitive.radius)
+		printf("primitive radius: %f\n", lst_obj->primitive.radius);
+		if (lst_obj->primitive.height)
+		printf("primitive height: %f\n", lst_obj->primitive.height);
+		if (lst_obj->primitive.angle)
+		printf("primitive angle: %f\n", lst_obj->primitive.angle);
+		if (lst_obj->transform.position.x || lst_obj->transform.position.y || lst_obj->transform.position.z)
+		printf("pos x : %f ,pos y : %f ,pos z : %f\n", lst_obj->transform.position.x,lst_obj->transform.position.y,lst_obj->transform.position.z);
+		if (lst_obj->transform.rotation.x || lst_obj->transform.rotation.y || lst_obj->transform.rotation.z)
+		printf("rot x : %f ,rot y : %f ,rot z : %f\n", lst_obj->transform.rotation.x,lst_obj->transform.rotation.y,lst_obj->transform.rotation.z);
+		if (lst_obj->material.color.x || lst_obj->material.color.y || lst_obj->material.color.z)
+		printf("color : %f,%f,%f\n", lst_obj->material.color.x,lst_obj->material.color.y,lst_obj->material.color.z);
+		if (lst_obj->light_prop.color.x || lst_obj->light_prop.color.y || lst_obj->light_prop.color.z)
+		printf("light_color : %f,%f,%f\n", lst_obj->light_prop.color.x,lst_obj->light_prop.color.y,lst_obj->light_prop.color.z);
+		if (lst_obj->material.emission_color.x || lst_obj->material.emission_color.y || lst_obj->material.emission_color.z)
+		printf("emission_color : %f,%f,%f\n", lst_obj->material.emission_color.x,lst_obj->material.emission_color.y,lst_obj->material.emission_color.z);
+		if (lst_obj->material.highlight_color.x || lst_obj->material.highlight_color.y || lst_obj->material.highlight_color.z)
+		printf("highlight_color : %f,%f,%f\n", lst_obj->material.highlight_color.x,lst_obj->material.highlight_color.y,lst_obj->material.highlight_color.z);
+		if (lst_obj->camera.post_processing_mask)
+		printf("mask: %d\n", lst_obj->camera.post_processing_mask);
+		scene->nb_object--;
+		if (lst_obj->children)
+			lst_obj = lst_obj->children;
+		else if (lst_obj->brother_of_children)
+			lst_obj = lst_obj->brother_of_children;
+		else
+			lst_obj = lst_obj->parent->brother_of_children;
+	}
+}
+
 #define FILL_PROP(X, line, pname) _Generic((X), t_light *: fill_prop_light, t_transform *: fill_prop_transform, t_material *:fill_prop_material, t_camera *:fill_prop_camera, t_primitive *:fill_prop_primitive) (X, line, pname)
 #define A(c, line, p1) FILL_PROP(&c-> p1, line, #p1);// FILL_PROP(&c-> p2, line, #p2);
 void			parse_rt_file(char *file, t_scene *scene)
-{
+
+
 	int			fd;
 	char		line[0xF000 + 1];
 	char		obj_name[256];
 	int			indent_level;
+	int			nb_object;
 	t_object	*current_object;
+	t_object	*old_object;
 
+	nb_object = 0;
 	INIT(int, line_count, 0);
 	if ((fd = open(file, O_RDONLY)) == -1)
 		ft_exit("Open Failed");
@@ -185,13 +241,31 @@ void			parse_rt_file(char *file, t_scene *scene)
 		SKIP_EMPTY_LINE(line);
 		if (check_obj_line(line, obj_name, &indent_level))
 		{
-
 			NEW_OBJECT(current_object, obj_name);
 			current_object->indent_level = indent_level;
+			scene->nb_object = ++nb_object;
+			if (scene->nb_object == 1){
+				scene->root_view = current_object;
+				old_object = current_object;
+			}
+			if (old_object->indent_level < current_object->indent_level){
+				old_object->children = current_object;
+				current_object->parent = old_object;
+			}
+			while(old_object->indent_level > current_object->indent_level){
+				old_object = old_object->parent;
+			}
+			if (old_object->indent_level == current_object->indent_level){
+				old_object->brother_of_children = current_object;
+				current_object->parent = old_object->parent;
+			}
+			old_object = current_object;
 			continue ;
 		}
 		if (indent_level >= 10)
 			ft_exit("max indentation reached at line: %i\n", line_count);
+		if (nb_object > 300)
+			ft_exit("nb max object reached at line: %i\n", line_count);
 		if (indent_level == current_object->indent_level + 1)
 		{
 			A(current_object, line, transform);
@@ -199,27 +273,10 @@ void			parse_rt_file(char *file, t_scene *scene)
 			A(current_object, line, primitive);
 			A(current_object, line, light_prop);
 			A(current_object, line, camera);
-
-			printf("name: %s\n", current_object->name);
-			printf("line: %s\n", line);
-			if (current_object->material.transparency)
-				printf("transparency: %f\n", current_object->material.transparency);
-			if (current_object->material.specular)
-				printf("specular: %f\n", current_object->material.specular);
-			if (current_object->material.reflection)
-				printf("reflection: %f\n", current_object->material.reflection);
-			if (current_object->material.refraction)
-				printf("refraction: %f\n", current_object->material.refraction);
-			printf("pos.x: %f, pos.y: %f, pos.z: %f\n", current_object->transform.position.x,current_object->transform.position.y,current_object->transform.position.z);
-			printf("rot.x: %f, rot.y: %f, rot.z: %f\n", current_object->transform.rotation.x,current_object->transform.rotation.y,current_object->transform.rotation.z);
-			if (current_object->camera.post_processing_mask)
-				printf("mask: %x\n", current_object->camera.post_processing_mask);
-			if (current_object->material.illum)
-				printf("material illum: %x\n", current_object->material.illum);
 		}
 		else
 			ft_exit("bad indentation at line %i\n", line_count);
 	}
-	(void)scene;
+	affichage_test(scene);
 	close(fd);
 }

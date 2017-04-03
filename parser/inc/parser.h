@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avially <avially@student.42.fr>            +#+  +:+       +#+        */
+/*   By: vdaviot <vdaviot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/08/08 14:47:27 by vdaviot           #+#    #+#             */
-/*   Updated: 2017/03/30 19:05:09 by avially          ###   ########.fr       */
+/*   Updated: 2017/04/03 15:21:42 by avially          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@
 # define LF_RT_SCALE	"\\sscale:\\s%f\\s%f\\s%f\\s"
 
 # define LF_RT_COLOR	"\\scolor:\\s%z\\s"
+# define LF_RT_LIGHT_COLOR	"\\slight_color:\\s%z\\s"
 # define LF_RT_EMISSION_COLOR "\\semission color:\\s%z\\s"
 # define LF_RT_HIGHLIGHT_COLOR "\\shighlight color:\\s%z\\s"
 
@@ -268,7 +269,8 @@ typedef struct			s_object
 
 typedef struct			s_scene
 {
-	t_object		root_view;
+	int					nb_object;
+	t_object		*root_view;
 }						t_scene;
 
 /*

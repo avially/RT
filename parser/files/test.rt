@@ -2,8 +2,8 @@ lovely triangle:
 	type: triangle
 	pos: 900 520 20
 	rot: 0 0 0
-	color: 0xFF00FF
-	csg: XOR
+	light_color: #FF00FF
+	transparency: 0.5
 
 little sphere:
 	type: sphere
@@ -11,7 +11,7 @@ little sphere:
 	rot: 0 0 0
 	radius: 0.5
 	texture: yolol.png
-	emission color: 0 1 1
+	emission color: #FFEFEE
 	highlight color: 1 1 0
 	transparency: 0.5
 	reflection: OFF
@@ -42,16 +42,19 @@ sun:
 	pos: 100 100 100
 	rot: 0 -1 0
 
+	body:
+		type: cube
+
 player:
 	pos: 12 12 12
+
+	body:
+		type: cube
 
 	head:
 		type: sphere
 		pos: 0 1 0
 		slice: 0 1 0 .5 | 0 1 0 .2
-
-	body:
-		type: cube
 
 	leg1:
 		type: mesh
