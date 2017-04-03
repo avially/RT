@@ -1,20 +1,22 @@
 lovely triangle:
-	type: triangle
+	type: plane
 	pos: 900 520 20
-	light_color: #FF00FF
-	transparency: 0.5
+	color: 0xFF00FF
+	transparency: 1
+	fov: 30
 
 little sphere:
 	type: sphere
 	pos: 5 0 10
 	rot: 0 0 0
 	radius: 0.5
+	height: 0.8
 	texture: yolol.png
-	emission color: #FFEFEE
+	color: 0 25 35
+	emission color: 0xFFEF00
 	highlight color: 1 1 0
-	light_color: 0 0 5
 	transparency: 0.5
-	reflection: OFF
+	reflection: 2.
 	refraction: .5
 	bumpmap: olol.tga
 	slice: 0 1 0 .3
@@ -27,6 +29,8 @@ plane:
 	emission map: olol.tga
 	highlight map: color.tga
 	transparency map: map.png
+	specular: 6.2
+	color: 5 98 0
 	specular map: sepc.png
 	pos: 880 540 200
 	rot: 0 0 -1
@@ -35,6 +39,9 @@ plane:
 light 1:
 	type: point_light
 	intensity: 3
+	angle: 0.3
+	height: 0.9
+	radius: 0.5
 	pos: 100 100 100
 
 sun:
@@ -46,6 +53,7 @@ sun:
 		type: cube
 
 player:
+	type: sphere
 	pos: 12 12 12
 
 	body:
@@ -54,10 +62,10 @@ player:
 	head:
 		type: sphere
 		pos: 0 1 0
-		slice: 0 1 0 .5 | 0 1 0 .2
+		slice: 0 1 0 .5
 
 	leg1:
-		type: mesh
+		type: plane
 		scale: .5 1 .5
 		pos: 0 -1 0
 		mesh: truc.obj

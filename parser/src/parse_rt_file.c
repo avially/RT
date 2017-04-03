@@ -6,7 +6,7 @@
 /*   By: avially <avially@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/09/20 22:01:00 by vdaviot           #+#    #+#             */
-/*   Updated: 2017/04/03 16:04:22 by avially          ###   ########.fr       */
+/*   Updated: 2017/04/03 20:58:35 by avially          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,24 +83,33 @@ void 			fill_prop_camera(t_camera *cam, char *line, const char *prop)
 
 void  		fill_prop_primitive(t_primitive *prim, char *line, const char *prop)
 {
+	char	*str = (char *)(char[256]){0};
+	int		i;
+
 	ft_sscanf(LF_RT_RADIUS, line, &prim->radius);
 	ft_sscanf(LF_RT_HEIGHT, line, &prim->height);
 	ft_sscanf(LF_RT_ANGLE, line, &prim->angle);
 
-	//if (!ft_sscanf(LF_RT_SLICE, line, &prim->slice))
+	if(!ft_sscanf(LF_RT_TYPE, line, str, 256))
+	if (FOR(i = 0, type_restricted_keywords[i], i++))
+	{
+		if (!ft_strcmp(type_restricted_keywords[i],  ft_strupcase(str)))
+			prim->type = i + 1;
+	}
+	if (!prim->type)
+		ft_exit("mauvais type pour un objet\n");
+
+	ft_sscanf(LF_RT_SLICE, line, &prim->slice.x, &prim->slice.y, &prim->slice.z, &prim->slice.w);
 	//	prim->nb_slice++;
 }
 
 void			fill_prop_light(t_light *light, char *line, const char *prop)
 {
 	char	name[256];
-
-	ft_sscanf(LF_RT_LIGHT_COLOR, line, &light->color.x, &light->color.y, &light->color.z);
+	if (ft_sscanf(LF_RT_COLOR_F, line, &light->color.x, &light->color.y, &light->color.z))
+		ft_sscanf(LF_RT_COLOR_V, line, &light->color.x, &light->color.y, &light->color.z);
 
 	ft_sscanf(LF_RT_INTENSITY, line, &light->intensity);
-	ft_sscanf(LF_RT_ANGLE, line, &light->angle);
-
-	ft_sscanf(LF_RT_TYPE, line, &name, sizeof(name));
 }
 
 void			fill_prop_transform(t_transform *tsf, char *line, const char *prop)
@@ -117,9 +126,12 @@ void  		fill_prop_material(t_material *mtl, char *line, const char *prop)
 	int		i;
 
 	ret = 0;
-	ft_sscanf(LF_RT_COLOR, line, &mtl->color.x, &mtl->color.y, &mtl->color.z);
-	ft_sscanf(LF_RT_EMISSION_COLOR, line, &mtl->emission_color.x, &mtl->emission_color.y, &mtl->emission_color.z);
-	ft_sscanf(LF_RT_HIGHLIGHT_COLOR, line, &mtl->highlight_color.x, &mtl->highlight_color.y, &mtl->highlight_color.z);
+	if (ft_sscanf(LF_RT_COLOR_F, line, &mtl->color.x, &mtl->color.y, &mtl->color.z))
+		ft_sscanf(LF_RT_COLOR_V, line, &mtl->color.x, &mtl->color.y, &mtl->color.z);
+	if(ft_sscanf(LF_RT_EMISSION_COLOR_F, line, &mtl->emission_color.x, &mtl->emission_color.y, &mtl->emission_color.z))
+		ft_sscanf(LF_RT_EMISSION_COLOR_V, line, &mtl->emission_color.x, &mtl->emission_color.y, &mtl->emission_color.z);
+	if (ft_sscanf(LF_RT_HIGHLIGHT_COLOR_F, line, &mtl->highlight_color.x, &mtl->highlight_color.y, &mtl->highlight_color.z))
+		ft_sscanf(LF_RT_HIGHLIGHT_COLOR_V, line, &mtl->highlight_color.x, &mtl->highlight_color.y, &mtl->highlight_color.z);
 
 	ft_sscanf(LF_RT_TRANSPARENCY, line, &mtl->transparency);
 	ft_sscanf(LF_RT_SPECULAR, line, &mtl->specular);
@@ -163,9 +175,8 @@ void  		fill_prop_material(t_material *mtl, char *line, const char *prop)
 			}
 			mtl->illum = ret;
 	}
-}
 
-//T: protection for size of bumpmaps: same size than textures.
+}
 
 void   		affichage_test(t_scene *scene)
 {
@@ -175,40 +186,25 @@ void   		affichage_test(t_scene *scene)
 
 	while(scene->nb_object > 0){
 			printf("name: %s\n", lst_obj->name);
-		if (lst_obj->material.transparency)
-			printf("transparency: %f\n", lst_obj->material.transparency);
-		if (lst_obj->material.reflection)
-			printf("reflection: %f\n", lst_obj->material.reflection);
-		if (lst_obj->material.refraction)
-			printf("refraction: %f\n", lst_obj->material.refraction);
-		if (lst_obj->material.specular)
-			printf("specular: %f\n", lst_obj->material.specular);
-		if (lst_obj->light_prop.intensity)
-			printf("light intensity: %f\n", lst_obj->light_prop.intensity);
-		if (lst_obj->light_prop.angle)
-			printf("light angle: %f\n", lst_obj->light_prop.angle);
-		if (lst_obj->camera.fov)
-			printf("FOV: %f\n", lst_obj->camera.fov);
-		if (lst_obj->primitive.radius)
-			printf("primitive radius: %f\n", lst_obj->primitive.radius);
-		if (lst_obj->primitive.height)
-			printf("primitive height: %f\n", lst_obj->primitive.height);
-		if (lst_obj->primitive.angle)
-			printf("primitive angle: %f\n", lst_obj->primitive.angle);
-		if (lst_obj->transform.position.x || lst_obj->transform.position.y || lst_obj->transform.position.z)
-			printf("pos x : %f ,pos y : %f ,pos z : %f\n", lst_obj->transform.position.x,lst_obj->transform.position.y,lst_obj->transform.position.z);
-		if (lst_obj->transform.rotation.x || lst_obj->transform.rotation.y || lst_obj->transform.rotation.z)
-			printf("rot x : %f ,rot y : %f ,rot z : %f\n", lst_obj->transform.rotation.x,lst_obj->transform.rotation.y,lst_obj->transform.rotation.z);
-		if (lst_obj->material.color.x || lst_obj->material.color.y || lst_obj->material.color.z)
+			//printf("transparency: %f\n", lst_obj->material.transparency);
+			//printf("reflection: %f\n", lst_obj->material.reflection);
+			//printf("refraction: %f\n", lst_obj->material.refraction);
+			//printf("specular: %f\n", lst_obj->material.specular);
+			//printf("light intensity: %f\n", lst_obj->light_prop.intensity);
+			//printf("light angle: %f\n", lst_obj->light_prop.angle);
+			//printf("FOV: %f\n", lst_obj->camera.fov);
+			//printf("primitive radius: %f\n", lst_obj->primitive.radius);
+			//printf("primitive height: %f\n", lst_obj->primitive.height);
+			//printf("primitive angle: %f\n", lst_obj->primitive.angle);
+			//printf("pos x : %f ,pos y : %f ,pos z : %f\n", lst_obj->transform.position.x,lst_obj->transform.position.y,lst_obj->transform.position.z);
+			//printf("rot x : %f ,rot y : %f ,rot z : %f\n", lst_obj->transform.rotation.x,lst_obj->transform.rotation.y,lst_obj->transform.rotation.z);
+			//printf("slice.x : %f ,slice.y : %f , slice.z : %f , slice.w : %f \n", lst_obj->primitive.slice.x, lst_obj->primitive.slice.y, lst_obj->primitive.slice.z, lst_obj->primitive.slice.w);
 			printf("color : %f,%f,%f\n", lst_obj->material.color.x,lst_obj->material.color.y,lst_obj->material.color.z);
-		if (lst_obj->light_prop.color.x == 0 && lst_obj->light_prop.color.y == 0 && lst_obj->light_prop.color.z == 0)
-			printf("light_color : %f,%f,%f\n", lst_obj->light_prop.color.x, lst_obj->light_prop.color.y, lst_obj->light_prop.color.z);
-		if (lst_obj->material.emission_color.x || lst_obj->material.emission_color.y || lst_obj->material.emission_color.z)
-			printf("emission_color : %f,%f,%f\n", lst_obj->material.emission_color.x,lst_obj->material.emission_color.y,lst_obj->material.emission_color.z);
-		if (lst_obj->material.highlight_color.x || lst_obj->material.highlight_color.y || lst_obj->material.highlight_color.z)
-			printf("highlight_color : %f,%f,%f\n", lst_obj->material.highlight_color.x,lst_obj->material.highlight_color.y,lst_obj->material.highlight_color.z);
-		if (lst_obj->camera.post_processing_mask)
-			printf("mask: %d\n", lst_obj->camera.post_processing_mask);
+			//printf("light_color : %f,%f,%f\n", lst_obj->light_prop.color.x, lst_obj->light_prop.color.y, lst_obj->light_prop.color.z);
+			//printf("emission_color : %f,%f,%f\n", lst_obj->material.emission_color.x,lst_obj->material.emission_color.y,lst_obj->material.emission_color.z);
+			//printf("highlight_color : %f,%f,%f\n", lst_obj->material.highlight_color.x,lst_obj->material.highlight_color.y,lst_obj->material.highlight_color.z);
+			//printf("mask: %d\n", lst_obj->camera.post_processing_mask);
+			//printf("type : %d\n", lst_obj->primitive.type);
 		scene->nb_object--;
 		if (lst_obj->children)
 			lst_obj = lst_obj->children;

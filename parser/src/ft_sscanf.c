@@ -6,7 +6,7 @@
 /*   By: avially <avially@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/08/31 21:56:16 by vdaviot           #+#    #+#             */
-/*   Updated: 2017/03/30 19:06:57 by avially          ###   ########.fr       */
+/*   Updated: 2017/04/03 20:56:55 by avially          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static int		skip_string(char **format, char **str)
 
 static int		convert_float(char **format, char **str, float *f)
 {
-	if (!(ft_isdigit(**str) || **str == '-'))
+	if (!(ft_isdigit(**str) || **str == '-' || **str == '.'))
 		return (0);
 	*f = (float)ft_atof(*str);
 	while (ft_isdigit(**str) || **str == '.' || **str == 'f' || **str == '-' || **str == '+')
@@ -78,56 +78,35 @@ static	int		convert_str(char **format, char **str, char *ptr, int buffsize)
 	return (1);
 }
 
-static int	convert_color(char **format, char **str, float *r, float *g, float *b)
+void    rgbcolor(int color, float *r, float *g, float *b)
 {
-	char	*dest;
-
-	dest = (char *)malloc(sizeof(char) *3);
-	if (**str == '#')
-	{
-		(void)(*str)++;
-		*r = (float)ft_deconvert(ft_strncpy(dest, *str, 2), 16);
-		(void)(*str)++;
-		(void)(*str)++;
-		*g = (float)ft_deconvert(ft_strncpy(dest, *str, 2), 16);
-		(void)(*str)++;
-		(void)(*str)++;
-		*b = (float)ft_deconvert(ft_strncpy(dest, *str, 2), 16);
-	}
-	else if ((ft_isdigit(**str) || **str == '-'))
-	{
-	*r = (float)ft_atof(*str);
-	while (ft_isdigit(**str) || **str == '.' || **str == 'f' || **str == '-' || **str == '+')
-		(void)(*str)++;
-	while (ft_isspace(**str))
-		(void)(*str)++;
-	*g = (float)ft_atof(*str);
-	while (ft_isdigit(**str) || **str == '.' || **str == 'f' || **str == '-' || **str == '+')
-		(void)(*str)++;
-	*b = (float)ft_atof(*str);
-	}
-	(*format) += 2;
-	return (1);
+    *r = color >> 16 & 255;
+		*g = color >> 8 & 255;
+    *b = color & 255;
 }
 
-static int	convert_vect(char **format, char **str, float *x, float *y, float *z, float *w)
+int			hexa(char *str)
 {
-	*x = (float)ft_atof(*str);
-	while (ft_isdigit(**str) || **str == '.' || **str == 'f' || **str == '-' || **str == '+')
+	int	i;
+
+	i = 1;
+	if (str[i++] == 'x')
+		while (ft_isdigit(str[i]) || (str[i] > 64 && str[i] < 71))
+			i++;
+	printf("i : %d", i);
+	if (i == 8)
+		return (1);
+	return (0);
+}
+
+static int	convert_color(char **format, char **str, float *r, float *g, float *b)
+{
+	if (**str == '0' && hexa(*str))
+	{
 		(void)(*str)++;
-	while (ft_isspace(**str))
 		(void)(*str)++;
-	*y = (float)ft_atof(*str);
-	while (ft_isdigit(**str) || **str == '.' || **str == 'f' || **str == '-' || **str == '+')
-		(void)(*str)++;
-	while (ft_isspace(**str))
-		(void)(*str)++;
-	*z = (float)ft_atof(*str);
-	while (ft_isdigit(**str) || **str == '.' || **str == 'f' || **str == '-' || **str == '+')
-		(void)(*str)++;
-	while (ft_isspace(**str))
-		(void)(*str)++;
-	*w = (float)ft_atof(*str);
+		rgbcolor(ft_ndeconvert(*str, 16, 6), r,g,b);
+	}
 	(*format) += 2;
 	return (1);
 }
@@ -164,9 +143,9 @@ int			ft_sscanf(char *format, char *str, ...)
 		if (*format == '%' && format[1] == 'z')
 			if (!convert_color(&format, &str, va_arg(vargs, float *), va_arg(vargs, float *), va_arg(vargs ,float *)))
 				return sscanf_return (-1, &vargs);
-		if (*format == '%' && format[1] == 'v')
-			if (!convert_vect(&format, &str, va_arg(vargs, float *), va_arg(vargs, float *), va_arg(vargs ,float *), va_arg(vargs, float *)))
-				return sscanf_return (-1, &vargs);
+		//if (*format == '%' && format[1] == 'v')
+		//	if (!convert_vect(&format, &str, va_arg(vargs, float *), va_arg(vargs, float *), va_arg(vargs ,float *), va_arg(vargs, float *)))
+		//		return sscanf_return (-1, &vargs);
 		if (!skip_string(&format, &str))
 			return sscanf_return (-1, &vargs);
 	}

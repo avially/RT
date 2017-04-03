@@ -6,7 +6,7 @@
 /*   By: avially <avially@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/17 00:14:55 by alelievr          #+#    #+#             */
-/*   Updated: 2017/03/30 16:34:49 by avially          ###   ########.fr       */
+/*   Updated: 2017/04/03 19:03:34 by avially          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ const struct {char *name; int value; } mask_restricted_keywords[] = {
 };
 
 const char * type_restricted_keywords[] = {
-	"SPHERE", "PLANE", "CYLINDRE", "CONE", "CAMERA", "POINT_LIGHT",
+	"SPHERE", "PLANE", "CYLINDRE", "CONE", "CUBE", "CAMERA", "POINT_LIGHT",
 	"SPOT_LIGHT", "DIRECTIONAL_LIGHT", NULL
 };
 

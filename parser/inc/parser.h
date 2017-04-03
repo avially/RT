@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vdaviot <vdaviot@student.42.fr>            +#+  +:+       +#+        */
+/*   By: avially <avially@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/08/08 14:47:27 by vdaviot           #+#    #+#             */
-/*   Updated: 2017/04/03 15:21:42 by avially          ###   ########.fr       */
+/*   Updated: 2017/04/03 21:00:01 by avially          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,12 @@
 # define LF_RT_ROT		"\\srot:\\s%f\\s%f\\s%f\\s"
 # define LF_RT_SCALE	"\\sscale:\\s%f\\s%f\\s%f\\s"
 
-# define LF_RT_COLOR	"\\scolor:\\s%z\\s"
-# define LF_RT_LIGHT_COLOR	"\\slight_color:\\s%z\\s"
-# define LF_RT_EMISSION_COLOR "\\semission color:\\s%z\\s"
-# define LF_RT_HIGHLIGHT_COLOR "\\shighlight color:\\s%z\\s"
+# define LF_RT_COLOR_F	"\\scolor:\\s%f\\s%f\\s%f\\s"
+# define LF_RT_COLOR_V	"\\scolor:\\s%z\\s"
+# define LF_RT_EMISSION_COLOR_F "\\semission color:\\s%f\\s%f\\s%f\\s"
+# define LF_RT_EMISSION_COLOR_V "\\semission color:\\s%z\\s"
+# define LF_RT_HIGHLIGHT_COLOR_F "\\shighlight color:\\s%f\\s%f\\s%f\\s"
+# define LF_RT_HIGHLIGHT_COLOR_V "\\shighlight color:\\s%z\\s"
 
 # define LF_RT_TRANSPARENCY "\\stransparency:\\s%f\\s"
 # define LF_RT_SPECULAR "\\sspecular:\\s%f\\s"
@@ -41,11 +43,11 @@
 # define LF_RT_REFRACTION "\\srefraction:\\s%f\\s"
 # define LF_RT_INTENSITY "\\sintensity:\\s%f\\s"
 # define LF_RT_ANGLE "\\sangle:\\s%f\\s"
-# define LF_RT_RADIUS 	"\\sradius:\\s%f\\s"
-# define LF_RT_HEIGHT 	"\\sheight:\\s%f\\s"
+# define LF_RT_RADIUS "\\sradius:\\s%f\\s"
+# define LF_RT_HEIGHT "\\sheight:\\s%f\\s"
 # define LF_FT_FOV "\\sfov:\\s%f\\s"
 
-# define LF_RT_SLICE "\\sslice:\\s%v\\s"
+# define LF_RT_SLICE "\\sslice:\\s%f\\s%f\\s%f\\s%f\\s"
 
 # define LF_RT_TEXTURE	"\\stexture:\\s%s\\s"
 # define LF_RT_BUMPMAP	"\\sbumpmap:\\s%s\\s"
@@ -164,13 +166,13 @@ enum					e_illumination
 
 typedef	struct  s_primitive
 {
-	int					*type;
+	int					type;
 	union {
 		float			radius;
 		float			height;
 		float			angle;
 	};
-	t_vec4				*slice;
+	t_vec4			slice;
 	int					nb_slice;
 }				t_primitive;
 
@@ -239,10 +241,8 @@ typedef struct			s_camera
 
 typedef struct			s_light
 {
-	int			type;
 	t_vec3	color;
 	float		intensity;
-	float		angle;
 }						t_light;
 
 typedef struct s_object	t_object;
