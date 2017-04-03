@@ -1,7 +1,6 @@
 lovely triangle:
 	type: triangle
 	pos: 900 520 20
-	rot: 0 0 0
 	light_color: #FF00FF
 	transparency: 0.5
 
@@ -13,6 +12,7 @@ little sphere:
 	texture: yolol.png
 	emission color: #FFEFEE
 	highlight color: 1 1 0
+	light_color: 0 0 5
 	transparency: 0.5
 	reflection: OFF
 	refraction: .5
